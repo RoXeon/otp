@@ -564,7 +564,8 @@ pkix_path_validation(PathErr, [Cert | Chain], Options0) when is_atom(PathErr)->
     try VerifyFun(Otpcert, Reason, Userstat0) of
 	{valid, Userstate} ->
 	    Options = proplists:delete(verify_fun, Options0),
-	    pkix_path_validation(Otpcert, Chain, [{verify_fun,
+	    io:format("Error: ~p as valid peer. Chain: ~p", [PathErr, Chain]),
+	    pkix_path_validation(Otpcert, [Cert | Chain], [{verify_fun,
 						   {VerifyFun, Userstate}}| Options]);
 	{fail, _} ->
 	    {error, Reason}
