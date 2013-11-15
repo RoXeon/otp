@@ -616,11 +616,17 @@ find_src(Beam) ->
 	true -> Src0;
 	false ->
 	    EbinDir = filename:dirname(Beam),
-	    Src = filename:join([filename:dirname(EbinDir), "src",
-				 filename:basename(Src0)]),
+      Src = filename:join([filename:dirname(EbinDir), "src",
+ 				 filename:basename(Src0)]),
+
 	    case is_file(Src) of
 		true -> Src;
-		false -> error
+		false -> Srcs = filelib:wildcard(filename:join([filename:dirname(EbinDir), "src", "**", filename:basename(Src0)])),
+             case Srcs of
+               [] -> error;
+               [File] -> File;
+               [File | _Files] -> File
+             end
 	    end
     end.
 
@@ -735,3 +741,7 @@ del_mod(AbsMod, Dist) ->
 		       erlang:yield()
 	       end),
     ok.
+
+
+
+
