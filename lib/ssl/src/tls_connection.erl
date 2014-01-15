@@ -1467,7 +1467,7 @@ do_server_hello(Type, NextProtocolsToSend,
 	new ->
 	    new_server_hello(ServerHello, State);
 	resumed ->
-	    resumed_server_hello(State)
+	    new_server_hello(ServerHello, State)
     end.
 
 new_server_hello(#server_hello{cipher_suite = CipherSuite,
