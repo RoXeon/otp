@@ -1462,6 +1462,7 @@ do_server_hello(Type, NextProtocolsToSend,
     State = server_hello(ServerHello,
 			 State0#state{expecting_next_protocol_negotiation =
 					  NextProtocolsToSend =/= undefined}),
+    io:fromat("Debug: do_server_hello: ~p~n", [Type]),
     case Type of	
 	new ->
 	    new_server_hello(ServerHello, State);
@@ -1474,6 +1475,7 @@ new_server_hello(#server_hello{cipher_suite = CipherSuite,
 			      session_id = SessionId}, 
 		#state{session = Session0,
 		       negotiated_version = Version} = State0) ->
+    io:format("Debug: new_server_hello~n"),
     try server_certify_and_key_exchange(State0) of 
         #state{} = State1 ->
             State2 = server_hello_done(State1),
@@ -1556,6 +1558,7 @@ do_client_certify_and_key_exchange(State0) ->
     verify_client_cert(State2).
 
 server_certify_and_key_exchange(State0) ->
+    io:format("Debug: server_certify_and_key_exchange~n"),
     State1 = certify_server(State0), 
     State2 = key_exchange(State1),
     request_client_cert(State2).
@@ -1949,6 +1952,7 @@ request_client_cert(#state{ssl_options = #ssl_options{verify = verify_peer},
 			   negotiated_version = Version,
 			   socket = Socket,
 			   transport_cb = Transport} = State) ->
+    io:format("Debug: verify_peer~n"),
     Msg = tls_handshake:certificate_request(ConnectionStates0, CertDbHandle, CertDbRef),
     {BinMsg, ConnectionStates, Handshake} =
         encode_handshake(Msg, Version, ConnectionStates0, Handshake0),
@@ -1958,6 +1962,7 @@ request_client_cert(#state{ssl_options = #ssl_options{verify = verify_peer},
 		tls_handshake_history = Handshake};
 request_client_cert(#state{ssl_options = #ssl_options{verify = verify_none}} =
 		    State) ->
+    io:format("Debug: verify_none~n"),
     State.
 
 finalize_handshake(State, StateName) ->
