@@ -997,6 +997,7 @@ handle_sync_event({set_opts, OptsOrig}, _From, StateName,
 
     {Reply, Opts} = set_socket_opts(Transport, Socket, Opts0, Opts1, []),
     State1 = State0#state{socket_options = Opts, ssl_options = NewSslOpts},
+    io:format("Debug00: ~p~n", [State1]),
     if 
 	Opts#socket_options.active =:= false ->
 	    {reply, Reply, StateName, State1, get_timeout(State1)};
@@ -2914,7 +2915,7 @@ ack_connection(State) ->
     State.
 
 renegotiate(#state{role = client} = State) ->
-    io:format("Debug0: ~p~n", [State])
+    io:format("Debug0: ~p~n", [State]),
     %% Handle same way as if server requested
     %% the renegotiation
     Hs0 = tls_handshake:init_handshake_history(),
@@ -2924,6 +2925,7 @@ renegotiate(#state{role = server,
 		   transport_cb = Transport,
 		   negotiated_version = Version,
 		   connection_states = ConnectionStates0} = State0) ->
+    io:format("Debug0: ~p~n", [State]),
     HelloRequest = tls_handshake:hello_request(),
     Frag = tls_handshake:encode_handshake(HelloRequest, Version),
     Hs0 = tls_handshake:init_handshake_history(),
