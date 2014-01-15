@@ -2925,7 +2925,7 @@ renegotiate(#state{role = server,
 		   transport_cb = Transport,
 		   negotiated_version = Version,
 		   connection_states = ConnectionStates0} = State0) ->
-    io:format("Debug0: ~p~n", [State]),
+    io:format("Debug0: ~p~n", [State0]),
     HelloRequest = tls_handshake:hello_request(),
     Frag = tls_handshake:encode_handshake(HelloRequest, Version),
     Hs0 = tls_handshake:init_handshake_history(),
