@@ -2914,6 +2914,7 @@ ack_connection(State) ->
     State.
 
 renegotiate(#state{role = client} = State) ->
+    io:format("Debug0: ~p~n", [State])
     %% Handle same way as if server requested
     %% the renegotiation
     Hs0 = tls_handshake:init_handshake_history(),
