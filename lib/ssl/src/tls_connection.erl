@@ -1462,7 +1462,7 @@ do_server_hello(Type, NextProtocolsToSend,
     State = server_hello(ServerHello,
 			 State0#state{expecting_next_protocol_negotiation =
 					  NextProtocolsToSend =/= undefined}),
-    io:fromat("Debug: do_server_hello: ~p~n", [Type]),
+    io:format("Debug: do_server_hello: ~p~n", [Type]),
     case Type of	
 	new ->
 	    new_server_hello(ServerHello, State);
