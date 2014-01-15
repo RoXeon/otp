@@ -989,7 +989,7 @@ handle_sync_event({set_opts, OptsOrig}, _From, StateName,
                              (_, AccIn) -> AccIn 
                           end, [], OptsOrig),
     io:format("SSL Opts: ~p~n", [SslOpts]),
-    Opts0 = OptsOrig -- SslOpts;
+    Opts0 = OptsOrig -- SslOpts,
     NewSslOpts = lists:foldl(fun({verify, Value}, S) -> S#ssl_options{verify = Value};
                                 ({verify_fun, Value}, S) -> S#ssl_options{verify_fun = Value} 
                             end, SslOpts0, SslOpts),
