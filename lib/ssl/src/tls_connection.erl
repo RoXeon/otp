@@ -978,13 +978,25 @@ handle_sync_event(negotiated_next_protocol, _From, StateName, #state{next_protoc
 handle_sync_event(negotiated_next_protocol, _From, StateName, #state{next_protocol = NextProtocol} = State) ->
     {reply, {ok, NextProtocol}, StateName, State, get_timeout(State)};
 
-handle_sync_event({set_opts, Opts0}, _From, StateName, 
-		  #state{socket_options = Opts1, 
+handle_sync_event({set_opts, OptsOrig}, _From, StateName, 
+		  #state{socket_options = Opts1,
+             ssl_options = SslOpts0,
 			 socket = Socket,
 			 transport_cb = Transport,
 			 user_data_buffer = Buffer} = State0) ->
+    SslOpts = lists:foldl(fun({verify, _} = Opt, AccIn) -> [Opt | AccIn];
+                             ({verify_fun, _} = Opt, AccIn) -> [Opt | AccIn];
+                             (_, AccIn) -> AccIn 
+                          end, [], OptsOrig),
+    io:format("SSL Opts: ~p~n", [SslOpts]),
+    Opts0 = OptsOrig -- SslOpts;
+    NewSslOpts = lists:foldl(fun({verify, Value}, S) -> S#ssl_options{verify = Value};
+                                ({verify_fun, Value}, S) -> S#ssl_options{verify_fun = Value} 
+                            end, SslOpts0, SslOpts),
+    io:format("New SSL Opts: ~p~n", [NewSslOpts]),
+
     {Reply, Opts} = set_socket_opts(Transport, Socket, Opts0, Opts1, []),
-    State1 = State0#state{socket_options = Opts},
+    State1 = State0#state{socket_options = Opts, ssl_options = NewSslOpts},
     if 
 	Opts#socket_options.active =:= false ->
 	    {reply, Reply, StateName, State1, get_timeout(State1)};
